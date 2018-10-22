@@ -18,7 +18,7 @@ def getInf():
         conn = psycopg2.connect(dbname='abit', password='123', user='postgres')
         cur = conn.cursor()
         cur.execute("""
-        SELECT f.id_side, i.id_user, i.political, i.alcohol, i.religion, i.smoking, i.life_main, i.people_main, i.sex, i.id_faculty
+        SELECT i.id_user, i.political, i.alcohol, i.religion, i.smoking, i.life_main, i.people_main, i.sex, i.id_faculty, f.id_side
 	FROM public.faculty as f
 	JOIN informations as i on i.id_faculty=f.id
 	Where f.id_side<4 and (case when political = '' then 0 else 1 end+
@@ -83,7 +83,7 @@ case when sex is null then 0 else 1 end) > 5""")
             train_data.append(
                 [int(political), int(alcohol), int(religion), int(smoking), int(life_main), int(people_main),
                  int(i[7])])
-            train_labels.append(int(i[8]))
+            train_labels.append(int(i[9]))
             print(i)
 
     except Exception as e:
