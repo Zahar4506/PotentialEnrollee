@@ -17,23 +17,23 @@ def getInf():
     try:
         conn = psycopg2.connect(dbname='abit', password='123', user='postgres')
         cur = conn.cursor()
-        cur.execute("""SELECT id_user, political, alcohol, religion, smoking, life_main, people_main, sex, id_faculty
-	    FROM public.informations
-        where (case when political = '' then 0 else 1 end+
-        case when alcohol = '' then 0 else 1 end+
-        case when people_main = '' then 0 else 1 end+
-        case when life_main = '' then 0 else 1 end+
-        case when smoking = '' then 0 else 1 end+
-        case when religion = '' then 0 else 1 end+
-        case when sex is null then 0 else 1 end) > 5""")
-
+        cur.execute("""
+        SELECT f.id_side, i.id_user, i.political, i.alcohol, i.religion, i.smoking, i.life_main, i.people_main, i.sex, i.id_faculty
+	FROM public.faculty as f
+	JOIN informations as i on i.id_faculty=f.id
+	Where f.id_side<4 and (case when political = '' then 0 else 1 end+
+case when alcohol = '' then 0 else 1 end+
+case when people_main = '' then 0 else 1 end+
+case when life_main = '' then 0 else 1 end+
+case when smoking = '' then 0 else 1 end+
+case when religion = '' then 0 else 1 end+
+case when sex is null then 0 else 1 end) > 5""")
 
         train_data = []
         test_data = []
         train_labels = []
         test_labels = []
         id_user = []
-
 
         quer = cur.fetchall()
         print(len(quer))
@@ -45,15 +45,15 @@ def getInf():
             life_main = 0
             people_main = 0
 
-            if i[1]=='':
+            if i[1] == '':
                 political = 0
-            elif i[2]=='':
+            elif i[2] == '':
                 alcohol = 0
-            elif i[4]=='':
+            elif i[4] == '':
                 smoking = 0
-            elif i[5]=='':
+            elif i[5] == '':
                 life_main = 0
-            elif i[6]=='':
+            elif i[6] == '':
                 people_main = 0
 
             if i[3] == "":
@@ -80,7 +80,9 @@ def getInf():
                 religion = 10;
             print(religion)
             id_user.append(int(i[0]))
-            train_data.append([int(political), int(alcohol), int(religion), int(smoking),int(life_main), int(people_main), int(i[7])])
+            train_data.append(
+                [int(political), int(alcohol), int(religion), int(smoking), int(life_main), int(people_main),
+                 int(i[7])])
             train_labels.append(int(i[8]))
             print(i)
 
