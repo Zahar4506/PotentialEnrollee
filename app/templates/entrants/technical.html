@@ -1,0 +1,111 @@
+{% extends "maket.html" %}
+
+{% block title %}
+    {{ title }}
+{% endblock %}
+
+{% block breadcrumps %}
+    <ul class="breadcrumbs">
+        <li><a href="{{ url_for('index') }}"><i class="fa fa-dashboard"></i>Главная страница</a></li>
+        <li><a href="{{ url_for('potential') }}">Направления</a></li>
+        <li>Технические</li>
+    </ul>
+{% endblock %}
+
+{% block content %}
+<div class="grid-x grid-padding-x">
+    <div class="cell medium-2 medium-cell-block-y">
+        <h2>Фильтры</h2>
+        <div class="grid-container callout secondary">
+            <div class="grid-x grid-padding-x">
+                <div class="cell">
+                    <label>Город
+                        <select>
+                            {% for city in cities %}
+                                <option value="{{ city.city_id }}">{{ city.city }}</option>
+                            {% endfor %}
+                        </select>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="cell medium-10 medium-cell-block-y">
+        <section>
+            <table class="unstriped">
+                <thead>
+                <tr class="no-hide">
+                    <th>ФИО</th>
+                    <th>Город</th>
+                    <th width="150">Связаться</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for abitur in abiturs %}
+                    <tr data-game="c-{{ abitur.city_id }}" class="down">
+                        <td>
+                            <div>{{ abitur.last_name }} {{ abitur.first_name }} {{ abitur.middle_name }}</div>
+                        </td>
+                        <td>
+                            <div>{{ abitur.city }}</div>
+                        </td>
+                        <td>
+                            <div><a href="https://vk.com/id{{ abitur.id }}" target="_blank>">
+                                <img src="{{ url_for('static', filename='img/icons/vk.png') }}" alt="vk" width="40px">
+                            </a></div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    </div>
+</div>
+{% endblock %}
+
+{% block modal %}
+    <div class="reveal" id="modal" data-reveal>
+        <h1>Редактировать</h1>
+        <p class="lead">Комментарий/статус</p>
+        <form method="POST" action="{{ url_for('abitur_inf.saveInf') }}">
+             <div class="grid-x grid-padding-x">
+                <div class="cell">
+                    <label>ID абитуриента
+                        <input id="idAbitur" name="idAbitur" hidden>
+                    </label>
+                </div>
+            </div>
+            <div class="grid-x grid-padding-x">
+                <div class="cell">
+                    <label>Статус
+                        <select name="status">
+                            {% for stat in status %}
+                                <option value="{{ stat['id'] }}">{{ stat['name'] }}</option>
+                            {% endfor %}
+                        </select>
+                    </label>
+                </div>
+            </div>
+            <div class="grid-x grid-padding-x">
+                <div class="cell">
+                    <label>Комментарий
+                        <textarea name="comment" id="comment"></textarea>
+                    </label>
+                </div>
+            </div>
+            <p>
+                <input type="submit" class="primary button expanded" value="Сохранить">
+            </p>
+        </form>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function transfer(idies) {
+        document.getElementById('idAbitur').value = idies;
+        console.log(idies);
+    }
+</script>
+{% endblock %}
